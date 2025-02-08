@@ -1,14 +1,16 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Post
 
 
 def index(request):
-    return render(request, "network/index.html")
+    return render(request, "network/index.html", {
+        "posts": Post.objects.all()
+    })
 
 
 def login_view(request):
@@ -61,3 +63,11 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def newpost(request):
+    if(request.method == "POST"):
+        post = Post(user=request.user, content=request.POST["content"])
+        post.save()
+        return HttpResponseRedirect(reverse("index"))
+    else:
+        return JsonResponse({"error": "newpost url is accessible only using POST method"})
