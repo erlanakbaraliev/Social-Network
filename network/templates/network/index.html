@@ -1,32 +1,67 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    <div id="allpostsview">
+    <div id="allpostsView">
         <h1><strong>All posts</strong></h1>
-        <!-- <div id="newpostdiv">
-            {% if request.user.is_authenticated %}
-                <form action="{% url 'newpost' %}" method="POST">
+
+        {% if user.is_authenticated %}
+            <div id="newpostView">
+                <!-- <h1>New post</h1> -->
+                <form action="{% url 'newpost' %}" method="POST" class="p-3 rounded shadow-sm bg-light">
                     {% csrf_token %}
-                    <h3>New Post</h3>
-                    <textarea required name="content"></textarea>
-                    <button type="submit" class="btn-primary">POST</button>
+                    <h3 class="mb-3">Create a New Post</h3>
+                
+                    <div class="form-group">
+                        <textarea class="form-control" name="content" rows="4" placeholder="Write something..." required></textarea>
+                    </div>
+                
+                    <button type="submit" class="btn btn-info btn-block">Post</button>
                 </form>
-            {% endif %}
-        </div> -->
-
-        {% for post in posts %}
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-subtitle mb-2 text-body-secondary">@{{ post.user }}</h3>
-                    <a href="#">Edit</a>
-                    <p class="card-text">{{ post.content }}</p>
-                    <p class="card-text">{{ post.timedate }}</p>
-                </div>
             </div>
-        {% endfor %}
-    </div>
+        {% endif %}
+        
+        <div id="posts">
+        </div>
 
-    <div id="followingview">
-        <!-- <h1>Following users</h1> -->
+        <div id="pagination">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><button class="btn btn-secondary" id="all-prev">Previous</button></li>
+                    <li class="page-item"><button class="btn btn-secondary" id="all-next">Next</button></li>
+                </ul>
+            </nav>
+        </div>
     </div>
+    {% if user.is_authenticated %}
+        
+        <div id="profileView">
+            <h1><strong>Profile</strong></h1>
+            
+            <div id="followView">
+                <a class="btn btn-info" href="#" id="following"></a>
+                <a class="btn btn-info" href="#" id="followers"></a>
+            </div>
+
+            <div id="profilePosts"></div>
+
+            <div id="pagination">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item"><button class="btn btn-secondary" id="profile-prev">Previous</button></li>
+                        <li class="page-item"><button class="btn btn-secondary" id="profile-next">Next</button></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <div id="followingView">
+            <h1><strong>Following</strong></h1>
+        </div>
+
+        <div id="followersView">
+            <h1><strong>Followers</strong></h1>
+        </div>
+
+    {% endif %}
+
 {% endblock %}

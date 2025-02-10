@@ -1,11 +1,29 @@
-/* #allpostsview #allpostsviewSub #newpostdiv {
-    border-style: ridge;
-    padding: 10px;
-    margin-top: 10px;
-} */
-/* #allpostsview #allpostsviewSub #newpostdiv textarea {
+#allpostsView #newpostView {
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#allpostsView #newpostView textarea {
     width: 100%;
-} */
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    resize: none;
+    font-size: 16px;
+}
+
+#allpostsView #newpostView button {
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 10px;
+    font-weight: bold;
+}
+
 
 body {
     margin-left: 50px;
@@ -14,11 +32,20 @@ body {
     background-color: lightgray;
 }
 
-#allpostsview {
+#allpostsView, #pagination {
     margin-top: 10px;
 }
 
-#allpostsview .card {
+#allpostsView #posts .card, #profileView #profilePosts .card{
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    margin-top: 10px;
+    margin-top: 20px;
+}
+
+#allpostsView #pagination, #profileView #pagination {
+    display: flex;
+    justify-content: center;
+}
+
+#pagination .pagination .page-item {
+    margin-right: 5px;
 }
