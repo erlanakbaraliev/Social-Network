@@ -1,6 +1,28 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
+
+    <div id="loginView">
+        <h2>Login</h2>
+
+        {% if message %}
+            <div>{{ message }}</div>
+        {% endif %}
+
+        <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <input autofocus class="form-control" type="text" name="username" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" name="password" placeholder="Password">
+            </div>
+            <input class="btn btn-primary" type="submit" value="Login">
+        </form>
+
+        Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+    </div>
+
     <div id="allpostsView">
         <h1><strong>All posts</strong></h1>
 
@@ -38,14 +60,14 @@
             <h1><strong>Profile</strong></h1>
             
             <div id="followView">
-                <a class="btn btn-info" href="#" id="following"></a>
+                <a class="btn btn-info" href="#" id="followed"></a>
                 <a class="btn btn-info" href="#" id="followers"></a>
             </div>
 
             <div id="profilePosts"></div>
 
             <div id="pagination">
-                <nav aria-label="Page navigation example">
+                <nav aria-label="Pagination: next and previous buttons">
                     <ul class="pagination">
                         <li class="page-item"><button class="btn btn-secondary" id="profile-prev">Previous</button></li>
                         <li class="page-item"><button class="btn btn-secondary" id="profile-next">Next</button></li>
@@ -54,12 +76,22 @@
             </div>
         </div>
 
-        <div id="followingView">
-            <h1><strong>Following</strong></h1>
+        <div id="followedView">
+            <h1><strong>You followed:</strong></h1>
+            <div id="followedPosts"></div>
+
+            <div id="pagination">
+                <nav aria-label="Pagination: next and previous buttons">
+                    <ul class="pagination">
+                        <li class="page-item"><button class="btn btn-secondary" id="followed-prev">Previous</button></li>
+                        <li class="page-item"><button class="btn btn-secondary" id="followed-next">Next</button></li>
+                    </ul>
+                </nav>
+            </div>
         </div>
 
         <div id="followersView">
-            <h1><strong>Followers</strong></h1>
+            <h1><strong>Your followers:</strong></h1>
         </div>
 
     {% endif %}

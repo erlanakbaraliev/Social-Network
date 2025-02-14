@@ -41,7 +41,7 @@ body {
     margin-top: 20px;
 }
 
-#allpostsView #pagination, #profileView #pagination {
+#allpostsView #pagination, #profileView #pagination, #followedView #pagination {
     display: flex;
     justify-content: center;
 }

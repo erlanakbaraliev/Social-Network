@@ -1,21 +1,11 @@
-// window.onpopstate = function(event) {
-//     if (event.state) {
-//         const state = event.state;
-//         // Determine which view to load based on state.view
-//         if (state.view === "allposts") {
-//             loadView("#allpostsView");
-//             displayPage(state.page || 1);
-//         } else if (state.view === "profile") {
-//             loadView("#profileView");
-//             displayProfile(state.username, state.page || 1);
-//         }
-//     }
-// };
-
-
 document.addEventListener("DOMContentLoaded", ()=>{
     setupNavigation()
+
     loadView("#allpostsView")
+    // setupAllPostsPagination(): api call to the 1st pagea and renders it. Adds pagination to the 'next' 'previous' buttons. 
+    // Each time a button is pressed api call to the next/previous page is made and rendered.
+    // This method needs to be called only once as it has a field that keeps track of the current page by incrementing and decrementing
+    // also because add an event listener to the 'next', 'previous' buttons is enough
     setupAllPostsPagination()
 })
 
@@ -24,7 +14,6 @@ function setupNavigation() {
       '#allposts': () => {
         loadView('#allpostsView')
         
-        // history.pushState({view: "allposts", page: 1}, "", "")
         displayPage(1)
     },
       '#profile': () => {
@@ -33,15 +22,22 @@ function setupNavigation() {
         const profileButton = document.querySelector('#profile');
         const username = profileButton ? profileButton.dataset.username : null;
         if(username) {
-            // history.pushState({ view: "profile", username: username, page: 1 }, "", `profile/${username}?page=1`);
             setupProfilePagination(username)
         }
     },
-      '#following': () => {
-        loadView("#followingView")
+      '#followed': () => {
+        loadView("#followedView")
+
+        const profileButton = document.querySelector('#profile');
+        const username = profileButton.dataset.username
+
+        setupFollowedPagination(username)
     },  
       '#followers': () => {
         loadView("#followersView")
+    },
+      '#login': () => {
+        loadView("#loginView")
       }
     };
   
@@ -57,7 +53,7 @@ function setupNavigation() {
 }
 
 function loadView(viewId) {
-    ['#allpostsView', '#profileView','#followingView', "#followersView"].forEach(id => {
+    ['#allpostsView', '#profileView','#followedView', "#followersView", "#loginView"].forEach(id => {
         const div = document.querySelector(id)
         if(div) {
             div.style.display = id === viewId ? 'block' : 'none';
@@ -65,15 +61,38 @@ function loadView(viewId) {
       });
 }
 
+// --------------------------------------------------------------------------
+// renderPosts(posts, divID) is used by Main page (allPosts) and Profile page views
+
+function renderPosts(posts, divID) {
+    const postsDiv = document.querySelector(`${divID}`);
+    postsDiv.innerHTML = "";  // Clear current posts
+
+    posts.forEach(post => {
+        const postEl = document.createElement("div");
+        postEl.className = "card";
+        postEl.innerHTML = `
+            <div class="card-body">
+                <h4 class="card-title">@${post.user}</h4>
+                <p class="card-text">${post.content.replace(/\n/g, '<br>')}</p>
+                <p class="card-text"><small class="text-muted">${post.timedate}</small></p>
+            </div>
+        `;
+        postsDiv.appendChild(postEl);
+    });
+}
+
+// --------------------------------------------------------------------------
+// Main page
+
+// called only once
 function setupAllPostsPagination() {
     const prevButton = document.querySelector("#all-prev");
     const nextButton = document.querySelector("#all-next");
     let pageNumber = 1;
 
-    // Load initial page
     displayPage(pageNumber);
 
-    // Handle Previous button click
     prevButton.addEventListener('click', (event) => {
         event.preventDefault();
         if (pageNumber > 1) {
@@ -82,7 +101,6 @@ function setupAllPostsPagination() {
         }
     });
 
-    // Handle Next button click
     nextButton.addEventListener('click', (event) => {
         event.preventDefault();
         pageNumber++;
@@ -90,6 +108,7 @@ function setupAllPostsPagination() {
     });
 }
 
+// called each time 'next' or 'previous' buttons are clicked
 function displayPage(pageID) {
     fetch(`page/${pageID}`)
     .then(response => response.json())
@@ -99,20 +118,19 @@ function displayPage(pageID) {
             console.error(data.error);
             return;
         }
-        // Render the posts on the page
         renderPosts(data.posts, "#posts");
 
-        // Get pagination buttons
         const prevButton = document.querySelector("#all-prev");
         const nextButton = document.querySelector("#all-next");
 
-        // Enable/disable Previous button
         prevButton.disabled = !data.has_previous;
         nextButton.disabled = !data.has_next;
     })
     .catch(error => console.error("Error fetching page:", error));
 }
 
+// --------------------------------------------------------------------------
+// Profile page
 function setupProfilePagination(username) {
     const prevButton = document.querySelector("#profile-prev");
     const nextButton = document.querySelector("#profile-next");
@@ -139,12 +157,9 @@ function displayProfile(username, page=1) {
     fetch(`profile/${username}?page=${page}`)
     .then(response => response.json())
     .then(data => {
-        // Render profile posts into the #profilePosts container
         renderPosts(data.posts, "#profilePosts");
-        setupFollow(data.followed, data.followers)
+        renderFollow(data.followed.length, data.followers.length)
         
-        
-        // Optionally, update the pagination buttons’ disabled state
         const prevButton = document.querySelector("#profile-prev");
         const nextButton = document.querySelector("#profile-next");
         prevButton.disabled = !data.has_previous;
@@ -153,37 +168,57 @@ function displayProfile(username, page=1) {
     .catch(error => console.error("Error fetching profile:", error));
 }
 
-function renderPosts(posts, divID) {
-    const postsDiv = document.querySelector(`${divID}`);
-    postsDiv.innerHTML = "";  // Clear current posts
-
-    posts.forEach(post => {
-        const postEl = document.createElement("div");
-        postEl.className = "card";
-        postEl.innerHTML = `
-            <div class="card-body">
-                <h4 class="card-title">@${post.user}</h4>
-                <p class="card-text">${post.content.replace(/\n/g, '<br>')}</p>
-                <p class="card-text"><small class="text-muted">${post.timedate}</small></p>
-            </div>
-        `;
-        postsDiv.appendChild(postEl);
-    });
-}
-
-function setupFollow(followed, followers) {
-    renderFollow(followed.length, followers.length)
-
-    // document.querySelector("#following").addEventListener('click', (event)=>{
-        
-    // })
-    // document.querySelector("#followers").addEventListener('click', (event)=>{
-    //     console.log("Followers clicked")
-    // })
-    
-}
-
 function renderFollow(followedCount, followersCount) {
-    document.querySelector("#following").textContent = `Following: ${followedCount}`
+    document.querySelector("#followed").textContent = `Followed: ${followedCount}`
     document.querySelector("#followers").textContent = `Followers: ${followersCount}`
+}
+
+// --------------------------------------------------------------------------
+// Folowed and Followers page
+
+function setupFollowedPagination(username) {
+    displayFollowed(username)
+}
+
+function displayFollowed(username) {
+    fetch(`profile/${username}`)
+    .then(response => response.json())
+    .then(data => {
+        renderFollows(data.followed, "#followedPosts")
+    })
+}
+
+function renderFollows(posts, divID) {
+    const postsDiv = document.querySelector(`${divID}`);
+    postsDiv.innerHTML = "";
+
+    // each follower/following is a post
+    if(divID === "#followedPosts") {
+        posts.forEach(post => {
+            const postEl = document.createElement("div");
+            postEl.className = "card";
+    
+            postEl.innerHTML = `
+                <div class="card-body">
+                    <h4 class="card-title">@${ post.followed }</h4>
+                </div>
+            `;
+            
+            postsDiv.appendChild(postEl);
+        });
+    }
+    else {
+        posts.forEach(post => {
+            const postEl = document.createElement("div");
+            postEl.className = "card";
+    
+            postEl.innerHTML = `
+                <div class="card-body">
+                    <h4 class="card-title">@${ post.followers }</h4>
+                </div>
+            `;
+            
+            postsDiv.appendChild(postEl);
+        });
+    }
 }
