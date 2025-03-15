@@ -1,10 +1,10 @@
-version: '3'
-
 services:
   db:
     image: postgres
     environment:
       POSTGRES_PASSWORD: myDb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Correct volume mount
 
   web:
     build: .
@@ -13,3 +13,7 @@ services:
     ports:
       - "8000:8000"
     command: ["./wait-for-it.sh", "db:5432", "--", "python3", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# Declare volumes at the root level (no indentation)
+volumes:
+  postgres_data:  # Correct mapping (no hyphen here)
