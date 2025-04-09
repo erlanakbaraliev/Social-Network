@@ -61,6 +61,3 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
-
-# This is a change
-# I want to observe what change was made to the remote main branch using git fetch on my local main branch
