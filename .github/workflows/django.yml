@@ -27,4 +27,4 @@ jobs:
         pip install -r requirements.txt
     - name: Run WebApp
       run: |
-        python manage.py runserver
+        python3 manage.py runserver
