@@ -1,4 +1,0 @@
-Local Feature 1
-Local Feature 2
-Local Feature 3
-Local Feature 4
