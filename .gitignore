@@ -1,1 +1,4 @@
 *.pyc
+
+# Databes related files
+*.sqlite3
