@@ -10,7 +10,6 @@ test:
 coverage:
 	coverage run manage.py test
 
-
 .PHONY: shell
 shell:
 	python3 manage.py shell_plus
