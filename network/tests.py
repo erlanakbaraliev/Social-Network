@@ -11,9 +11,7 @@ class PostTest(TestCase):
         aizi = User.objects.create_user(username='aizi',
                                         email='aizi@gmail.com',
                                         password='123')
-        
-        follow = Follow.objects.create(follower=aida, following=aizi)
-
+        Follow.objects.create(follower=aida, following=aizi)
 
     def test_follow(self):
         aida = User.objects.get(username='aida')
