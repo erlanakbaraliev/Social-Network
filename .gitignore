@@ -2,3 +2,7 @@
 
 # Databes related files
 *.sqlite3
+
+# Coverage reports
+htmlcov/
+.coverage
