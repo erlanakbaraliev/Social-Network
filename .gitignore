@@ -6,3 +6,4 @@
 # Coverage reports
 htmlcov/
 .coverage
+.coverage.*

@@ -37,6 +37,3 @@ jobs:
     - name: Run Coverage Report
       run: |
         coverage report
-    - name: Run Coverage Html
-      run: |
-        coverage html
