@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
@@ -16,40 +17,41 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+    # Install PostgreSQL and dependencies
+    - name: Install PostgreSQL
+      run: |
+        sudo apt update
+        sudo apt install -y postgresql postgresql-contrib
+        sudo service postgresql start
+        sudo -u postgres psql -c "CREATE DATABASE test_db;"
+        sudo -u postgres psql -c "CREATE USER postgres WITH PASSWORD 'postgres';"
+        sudo -u postgres psql -c "ALTER ROLE postgres SET client_encoding TO 'utf8';"
+        sudo -u postgres psql -c "ALTER ROLE postgres SET default_transaction_isolation TO 'read committed';"
+        sudo -u postgres psql -c "ALTER ROLE postgres SET timezone TO 'UTC';"
+        sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO postgres;"
 
-    - name: Set up PostgreSQL
-      uses: subosito/postgresql-action@v2
-      with:
-        postgres-version: '13'
-        postgres-db: 'test_db'
-        postgres-user: 'postgres'
-        postgres-password: 'postgres'
-
+    # Install Dependencies
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    # Set environment variables for database
     - name: Set up environment variables
       run: echo "DATABASE_URL=postgres://postgres:postgres@localhost:5432/test_db" >> $GITHUB_ENV
-
     - name: Run Tests
       run: |
         python3 manage.py test
-
     - name: Run Pylint
       run: |
         pylint network/.
-
     - name: Run Coverage
       run: |
         coverage run manage.py test
-
     - name: Run Coverage Report
       run: |
         coverage report
