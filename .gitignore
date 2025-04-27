@@ -1,6 +1,6 @@
 *.pyc
 network/__pycache__/
-project/__pycache__/
+project4/__pycache__/
 
 # Databes related files
 *.sqlite3
