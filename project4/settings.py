@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'mydatabase',
         'USER': 'erlan',
         'PASSWORD': 'erlan',
-        'HOST': 'db',
+        'HOST': os.getenv('DB_HOST', 'localhost'),
         'PORT': '5432',
     }
 }
