@@ -37,8 +37,9 @@ jobs:
           sudo -u postgres psql -c "CREATE ROLE erlan WITH LOGIN PASSWORD 'erlan';"
         fi
         
-        # Grant privileges if role exists
-        sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO postgres;"
+        # Grant privileges to the role
+        sudo -u postgres psql -c "ALTER ROLE erlan CREATEDB;"
+        sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO erlan;"
 
     # Install Dependencies
     - name: Install Dependencies
