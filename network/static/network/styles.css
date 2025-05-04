@@ -1,0 +1,31 @@
+body {
+  font-family: "Poppins", sans-serif;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-top: 10px;
+  background-color: lightgray;
+}
+
+.navbar {
+  display: flex;
+  border-radius: 20px;
+  justify-content: space-between;
+}
+.navbar .logo {
+  width: 45px;
+  height: auto;
+  object-fit: contain;
+  margin-right: 10px;
+}
+.navbar .row {
+  padding-right: 20px;
+}
+.navbar .row #navbarNav #profile {
+  margin-left: 10px;
+}
+
+.btn {
+  border-radius: 20px;
+}
+
+/*# sourceMappingURL=styles.css.map */
