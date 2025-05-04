@@ -19,7 +19,7 @@ persistent=yes
 # usually to register additional checkers.
 load-plugins=pylint.extensions.bad_builtin
 
-disable=C0111,I0011,E1101,R0801,R1705,W1203,R1735,C0209,W0707,R0917
+disable=C0111,I0011,E1101,R0801,R1705,W1203,R1735,C0209,W0707,R0917,W0613
 enable=similarities
 
 # C0111     missing-docstring       Our priority is to make the code document

@@ -4,7 +4,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import *
+from .models import Post
+from .models import User
 
 
 def index(request):
@@ -68,16 +69,15 @@ def new_post(request):
         return HttpResponse("Successfully submitted the form")
     else:
         return HttpResponse("Post request is required")
-    
+
 def all_posts(request):
-    if request.method == "GET":
-        allposts = Post.objects.all().order_by('-time')
-        posts_list = [
-            {
-                "user": post.user.username,
-                "content": post.content,
-                "time": post.time.date()
-            }
-            for post in allposts
-        ]
-        return HttpResponse(posts_list)
+    allposts = Post.objects.all().order_by('-time')
+    posts_list = [
+        {
+            "user": post.user.username,
+            "content": post.content,
+            "time": post.time.date()
+        }
+        for post in allposts
+    ]
+    return HttpResponse(posts_list)
