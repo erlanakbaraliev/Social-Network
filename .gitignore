@@ -13,3 +13,6 @@ htmlcov/
 # Virtual environment
 .venv/
 venv/
+
+# Node modules
+node_modules/

@@ -17,3 +17,11 @@ shell:
 .PHONE: webapp_container
 webapp_container:
 	docker exec -it f59f097ae969 bash -l
+
+.PHONY: sass
+sass:
+	sass network/static/network/styles.scss network/static/network/styles.css
+
+.PHONY: sass_watch
+sass_watch:
+	sass --watch network/static/network/styles.scss:network/static/network/styles.css
