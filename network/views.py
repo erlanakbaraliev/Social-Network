@@ -1,10 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import *
 
 
 def index(request):
@@ -61,3 +61,23 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def new_post(request):
+    if request.method == "POST":
+        Post.objects.create(user=request.user, content=request.POST["content"])
+        return HttpResponse("Successfully submitted the form")
+    else:
+        return HttpResponse("Post request is required")
+    
+def all_posts(request):
+    if request.method == "GET":
+        allposts = Post.objects.all().order_by('-time')
+        posts_list = [
+            {
+                "user": post.user.username,
+                "content": post.content,
+                "time": post.time.date()
+            }
+            for post in allposts
+        ]
+        return HttpResponse(posts_list)

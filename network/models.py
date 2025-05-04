@@ -7,11 +7,11 @@ class User(AbstractUser):
 
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    title = models.CharField(max_length=120)
-    body = models.TextField(max_length=1000)
+    content = models.TextField(max_length=1000)
+    time = models.DateTimeField(auto_now=True, auto_created=False)
 
     def __str__(self):
-        return f"{self.title}: {self.body}"
+        return f"{self.time.date()} {self.user.username}: {self.content}"
 
 class Follow(models.Model):
     follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')
