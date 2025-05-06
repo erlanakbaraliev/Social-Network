@@ -70,7 +70,7 @@ def new_post(request):
     else:
         return HttpResponse("Post request is required")
 
-def all_posts(request):
+def posts(request):
     allposts = Post.objects.all().order_by('-time')
     posts_list = [
         {
