@@ -11,7 +11,10 @@ body {
   border-radius: 20px;
   justify-content: space-between;
 }
-.navbar .logo {
+.navbar #navbar-logo {
+  cursor: pointer;
+}
+.navbar #navbar-logo .logo {
   width: 45px;
   height: auto;
   object-fit: contain;
@@ -20,7 +23,7 @@ body {
 .navbar .row {
   padding-right: 20px;
 }
-.navbar .row #navbarNav #profile {
+.navbar .row #navbar-profile-btn #profile {
   margin-left: 10px;
 }
 
