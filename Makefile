@@ -25,3 +25,7 @@ sass:
 .PHONY: sass_watch
 sass_watch:
 	sass --watch network/static/network/css/styles.scss:network/static/network/css/styles.css
+
+.PHONY: log
+log:
+	git log --graph --oneline --decorate
