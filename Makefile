@@ -20,8 +20,8 @@ webapp_container:
 
 .PHONY: sass
 sass:
-	sass network/static/network/styles.scss network/static/network/styles.css
+	sass network/static/network/css/styles.scss:network/static/network/css/styles.css
 
 .PHONY: sass_watch
 sass_watch:
-	sass --watch network/static/network/styles.scss:network/static/network/styles.css
+	sass --watch network/static/network/css/styles.scss:network/static/network/css/styles.css
