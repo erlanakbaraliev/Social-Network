@@ -33,15 +33,4 @@ body {
 
 .btn {
     border-radius: $border_radius;
-    background-color: #1DA1F2;
-}
-
-// index.html
-#main_view {
-    .newpost {
-        margin-top: 10px;
-        form {
-            border-radius: $border_radius;
-        }
-    }
 }

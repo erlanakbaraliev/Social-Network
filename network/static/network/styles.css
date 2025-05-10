@@ -26,14 +26,6 @@ body {
 
 .btn {
   border-radius: 20px;
-  background-color: #1DA1F2;
-}
-
-#main_view .newpost {
-  margin-top: 10px;
-}
-#main_view .newpost form {
-  border-radius: 20px;
 }
 
 /*# sourceMappingURL=styles.css.map */
