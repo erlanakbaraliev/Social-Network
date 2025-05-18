@@ -68,3 +68,5 @@ def new_post(request):
         return HttpResponse("Form submitted")
     else:
         return HttpResponse("Post method is required to submit a new post")
+
+# Views.py change

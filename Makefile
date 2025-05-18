@@ -25,3 +25,5 @@ sass:
 .PHONY: sass_watch
 sass_watch:
 	sass --watch network/static/network/css/styles.scss:network/static/network/css/styles.css
+
+# Makefile change
