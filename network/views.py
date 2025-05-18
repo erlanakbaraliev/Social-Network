@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 
@@ -61,3 +62,9 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def new_post(request):
+    if request.method == "POST":
+        return HttpResponse("Form submitted")
+    else:
+        return HttpResponse("Post method is required to submit a new post")
