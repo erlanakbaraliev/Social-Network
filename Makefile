@@ -4,15 +4,15 @@ run:
 
 .PHONY: test
 test:
-	python3 manage.py test
+	docker-compose exec webapp python manage.py test
 
 .PHONY: coverage
 coverage:
-	coverage run manage.py test
+	docker-compose exec webapp coverage run manage.py test
 
 .PHONY: shell
 shell:
-	python3 manage.py shell_plus
+	docker-compose exec webapp python manage.py shell_plus
 
 .PHONE: webapp_container
 webapp_container:

@@ -65,6 +65,7 @@ def register(request):
 
 def new_post(request):
     if request.method == "POST":
-        return HttpResponse("Form submitted")
+
+        return HttpResponse(request.POST["new_post"])
     else:
         return HttpResponse("Post method is required to submit a new post")
