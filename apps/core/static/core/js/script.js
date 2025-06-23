@@ -33,11 +33,5 @@ $(document).ready(function() {
         })
     }
 
-    function setupPostModalOpenHandler() {
-        $("#main-post-submit-btn".click(function() {
-            $("#main-post-form-div")
-        }))
-    }
-
     main()
 })
