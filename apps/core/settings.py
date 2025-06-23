@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    'network',
+    'apps.core',
     'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'project4.urls'
+ROOT_URLCONF = 'apps.core.urls'
 
 TEMPLATES = [
     {
@@ -69,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'project4.wsgi.application'
+WSGI_APPLICATION = 'apps.core.wsgi.application'
 
 
 # Database
@@ -86,7 +86,6 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = "network.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

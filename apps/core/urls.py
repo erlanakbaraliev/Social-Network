@@ -15,8 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from apps.core import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("network.urls")),
+    path("", views.index, name="index"),
+    path("login", views.login_view, name="login"),
+    path("logout", views.logout_view, name="logout"),
+    path("register", views.register, name="register"),
+    path("new_post", views.new_post, name="new_post")
 ]
