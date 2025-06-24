@@ -49,12 +49,9 @@ jobs:
     # Set environment variables for database
     - name: Set up environment variables
       run: echo "DATABASE_URL=postgres://erlan:erlan@localhost:5432/test_db" >> $GITHUB_ENV
-    - name: Run Tests
-      run: |
-        python3 manage.py test
     - name: Run Pylint
       run: |
-        pylint network/.
+        pylint /
     - name: Run Coverage
       run: |
         coverage run manage.py test
