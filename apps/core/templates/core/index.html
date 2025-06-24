@@ -4,6 +4,7 @@
     <div class="main-section">
         <h1>Main</h1>
 
+
         <button id="main-post-submit-btn" class='btn btn-primary' onclick="document.getElementById('main-post-form-div').style.display='block'" style="width:auto;">Post</button>
         <div id="main-post-form-div" class="modal">
             <form action="{% url 'new_post' %}" method="post">

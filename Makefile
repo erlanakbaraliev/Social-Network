@@ -12,7 +12,8 @@ coverage:
 
 .PHONY: shell
 shell:
-	docker-compose exec webapp python manage.py shell_plus
+	python3 manage.py shell_plus
+# docker-compose exec webapp python manage.py shell_plus
 
 .PHONE: webapp_container
 webapp_container:

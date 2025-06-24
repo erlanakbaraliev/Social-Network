@@ -2,11 +2,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from apps.core.models import User
+from apps.core.models import User, Post
 
 @login_required(login_url='login')
 def index(request):
@@ -64,9 +64,15 @@ def register(request):
     else:
         return render(request, "core/register.html")
 
+
+login_required(login_url='login')
 def new_post(request):
     if request.method == "POST":
-
-        return HttpResponse(request.POST["new_post"])
+        Post.objects.create(user=request.user, body=request.POST['new_post'])
+        data = {
+            'dataKey': request.POST['new_post'] 
+        }
+        return JsonResponse(data)
+        # return HttpResponseRedirect(reverse('index'))
     else:
         return HttpResponse("Post method is required to submit a new post")
