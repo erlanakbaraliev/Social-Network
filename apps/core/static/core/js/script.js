@@ -5,7 +5,6 @@ $(document).ready(function() {
         setView(views[0])
         setupNavbarHandlers()
         setupPostModalClosedHandler()
-        setupPostModalOpenHandler()
     }
     
     function setView(view) {
