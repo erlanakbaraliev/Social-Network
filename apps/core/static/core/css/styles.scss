@@ -1,0 +1,78 @@
+$border_radius: 20px;
+
+body {
+    font-family: "Poppins", sans-serif;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 10px;
+    background-color: lightgray;
+}
+
+
+.navbar {
+    display: flex;
+    border-radius: $border_radius;
+    justify-content: space-between;
+    
+    #navbar-logo {
+        cursor: pointer;
+
+        .logo {
+            width: 45px;
+            height: auto;
+            object-fit: contain;
+            margin-right: 10px;
+        }
+    }
+
+    .row {
+        padding-right: 20px;
+        #navbar-profile-btn {
+            #profile {
+                margin-left: 10px;
+            }
+        }
+    }
+}
+
+.btn {
+    border-radius: $border_radius;
+}
+
+
+  /* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px;
+
+
+    form {
+        border-radius: $border_radius;
+        background-color: #343a40;
+        width: 100%;
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 30px;
+
+        padding: 20px 20px 10px 20px;
+
+        .btn {
+            margin-top: 10px;
+        }
+    }
+}
+// Post modal end
+
+.error {
+    color: red;
+}

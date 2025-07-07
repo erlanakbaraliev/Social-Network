@@ -1,0 +1,66 @@
+body {
+  font-family: "Poppins", sans-serif;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-top: 10px;
+  background-color: lightgray;
+}
+
+.navbar {
+  display: flex;
+  border-radius: 20px;
+  justify-content: space-between;
+}
+.navbar #navbar-logo {
+  cursor: pointer;
+}
+.navbar #navbar-logo .logo {
+  width: 45px;
+  height: auto;
+  object-fit: contain;
+  margin-right: 10px;
+}
+.navbar .row {
+  padding-right: 20px;
+}
+.navbar .row #navbar-profile-btn #profile {
+  margin-left: 10px;
+}
+
+.btn {
+  border-radius: 20px;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  padding-top: 60px;
+}
+.modal form {
+  border-radius: 20px;
+  background-color: #343a40;
+  width: 100%;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  padding: 20px 20px 10px 20px;
+}
+.modal form .btn {
+  margin-top: 10px;
+}
+
+.error {
+  color: red;
+}
+
+/*# sourceMappingURL=styles.css.map */

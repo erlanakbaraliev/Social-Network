@@ -1,0 +1,20 @@
+*.pyc
+network/__pycache__/
+project4/__pycache__/
+
+# Databes related files
+*.sqlite3
+
+# Coverage reports
+htmlcov/
+.coverage
+
+# Virtual environment
+.venv/
+venv/
+
+# Node modules
+node_modules/
+
+# Mac cache
+.DS_Store

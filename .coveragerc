@@ -1,0 +1,16 @@
+[run]
+source = .
+branch = True
+[report]
+show_missing = True
+include = *.py
+omit = 
+    */__init__.py
+    */tests/*
+    */migrations/*
+    manage.py
+    utils/*
+    wsgi.py
+    asgi.py
+    settings.py
+    admin.py
