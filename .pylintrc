@@ -10,7 +10,7 @@
 # without editing the sys.path in the script
 init-hook='from pathlib import Path;import sys;sys.path.append(Path(Path.cwd().parent, "apps").as_posix())'
 
-ignore=.git,.msci,doc,static,htmlcov,docker,migrations,venv
+ignore=.git,doc,static,htmlcov,docker,migrations,venv
 
 # Pickle collected data for later comparisons.
 persistent=yes

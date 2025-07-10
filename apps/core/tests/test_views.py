@@ -65,7 +65,7 @@ class TestRegister(BaseViewForTestCase):
     #     url = reverse(self.VIEW_NAME)
     #     data = {
     #         'username': 'erlan2',
-    #         'email': 'erlan@msci.com',
+    #         'email': 'erlan@gmail.com',
     #         'password': 'erlan',
     #         'confirmation': 'erlan'
     #     }
