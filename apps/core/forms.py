@@ -101,3 +101,15 @@ class RegisterForm(forms.Form):
         if password != passwordConfirmation:
             raise ValidationError('Passwords do not match')
         return cleaned_data
+    
+class PostForm(forms.Form):
+    body=forms.CharField(
+        label='',
+        max_length=1000,
+        required=True,
+        widget=forms.Textarea(
+            attrs={
+                'placeholder': "What's happening?"
+            }
+        )
+    )

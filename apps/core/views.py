@@ -1,18 +1,22 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.template.loader import render_to_string
 
 from apps.core.models import User, Post
-from apps.core.forms import LoginForm, RegisterForm
+from apps.core.forms import LoginForm, RegisterForm, PostForm
 from apps.core.utils_for_views import handle_invalid_form
 
 
 @login_required(login_url='login')
 def index(request):
-    return render(request, "core/index.html")
+    context = {
+        'form': PostForm()
+    }
+    return render(request, "core/index.html", context)
 
 
 def login_view(request):
@@ -69,10 +73,20 @@ def register(request):
 @login_required(login_url='login')
 def new_post(request):
     if request.method == "POST":
-        Post.objects.create(user=request.user, body=request.POST['new_post'])
-        data = {
-            'dataKey': request.POST['new_post'] 
+        user = request.user
+        body = request.POST.get('body', False)
+        Post.objects.create(user=user, body=body)
+
+        context = {
+            'status': 'Post successfully submitted!'
         }
-        return JsonResponse(data)
+        return JsonResponse(context)
     else:
-        return HttpResponse("Post method is required to submit a new post")
+        context = {
+            'form': PostForm()
+        }
+        html = render_to_string("core/post.html", context, request)
+        return JsonResponse({
+                "html": html
+            }
+        )

@@ -1,16 +1,12 @@
 {% extends "core/layout.html" %}
+<!-- {% load static %} -->
 
 {% block body %}
     <div class="main-section">
         <h1>Main</h1>
-
-        <button id="main-post-submit-btn" class='btn btn-primary' onclick="document.getElementById('main-post-form-div').style.display='block'" style="width:auto;">Post</button>
-        <div id="main-post-form-div" class="modal">
-            <form action="{% url 'new_post' %}" method="post">
-                {% csrf_token %}
-                <textarea name="new_post" class="form-control" rows="4" placeholder="What's happening?" required></textarea>
-                <button id="post-btn" type="submit" class="btn btn-primary">Post</button>
-            </form>
+        
+        <div id="main-post-modal">
+            <button id="main-post-submit-btn" class='btn btn-primary'>Post</button>
         </div>
     </div>
     <div class="profile-section">

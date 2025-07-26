@@ -1,0 +1,9 @@
+{% load crispy_forms_tags %}
+
+{% block body %}
+    <form id="post-form" action="{% url 'new_post' %}" method="post">
+        {% csrf_token %}
+        {{ form | crispy}}
+        <input type="submit" class="btn btn-primary" value="Post">
+    </form>
+{% endblock %}
