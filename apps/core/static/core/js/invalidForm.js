@@ -1,4 +1,5 @@
-function showNotice(content, response_status, autoClose=false) {
+// Global function for showing notices
+function showNotice(content, response_status, autoClose=true) {
     var status_color_map = {
         "success": "green",
         "failure": "red",
@@ -6,14 +7,14 @@ function showNotice(content, response_status, autoClose=false) {
     }
 
     new jBox('Notice', {
-        position: {x: "center", y: "center"},
+        attributes: {y: "bottom"},
         content: content,
         color: status_color_map[response_status],
         autoClose: autoClose,
         animation: {
-            open: "tada",
-            close: "flip"
-        }
+            open: "pulse",
+            close: "zoomIn"
+        },
     })
 }
 
