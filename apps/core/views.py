@@ -1,14 +1,13 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.template.loader import render_to_string
 
 from apps.core.models import User, Post
 from apps.core.forms import LoginForm, RegisterForm, PostForm
-from apps.core.utils_for_views import handle_invalid_form
 
 
 @login_required(login_url='login')
@@ -48,15 +47,14 @@ def logout_view(request):
 def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
-        
+
         if form.is_valid():
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            passwordConfirmation = form.cleaned_data['passwordConfirmation']
 
             User.objects.create_user(username, email, password)
-            
+
             return HttpResponseRedirect(reverse('login'))
         else:
             context = {
@@ -78,7 +76,7 @@ def new_post(request):
         Post.objects.create(user=user, body=body)
 
         context = {
-            'status': 'Post successfully submitted!'
+            'message': 'Post successfully submitted!'
         }
         return JsonResponse(context)
     else:
@@ -86,7 +84,4 @@ def new_post(request):
             'form': PostForm()
         }
         html = render_to_string("core/post.html", context, request)
-        return JsonResponse({
-                "html": html
-            }
-        )
+        return HttpResponse(html)

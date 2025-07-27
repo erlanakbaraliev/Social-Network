@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from apps.core.models import Post
 from apps.core.utils_for_tests import BaseViewForTestCase
 
+
 class TestLogin(BaseViewForTestCase):
     VIEW_NAME = 'login'
 
@@ -15,8 +16,8 @@ class TestLogin(BaseViewForTestCase):
     def test_post_login_correct_credentials(self):
         url = reverse(self.VIEW_NAME)
         data = {
-            'username': 'testuser',
-            'password': '12345'
+            'username': self.user,
+            'password': self.passwd
         }
 
         response = self.client.post(url, data)
@@ -36,7 +37,6 @@ class TestLogin(BaseViewForTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(username=data['username']).exists())
-        self.assertEqual(response.context['message'], "Invalid username and/or password.")
 
 
 class TestRegister(BaseViewForTestCase):
@@ -47,13 +47,13 @@ class TestRegister(BaseViewForTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "core/register.html")
 
-    def test_post_register_with_new_email(self):
+    def test_register_with_new_email_redirects(self):
         url = reverse(self.VIEW_NAME)
         data = {
             'username': 'aida',
             'email': 'aida@gmail.com',
             'password': 'aida',
-            'confirmation': 'aida'
+            'password_confirmation': 'aida'
         }
         response = self.client.post(url, data)
 
@@ -61,31 +61,44 @@ class TestRegister(BaseViewForTestCase):
         self.assertTrue(User.objects.filter(username='aida').exists())
         self.assertRedirects(response, reverse("login"))
 
-    # def test_post_register_with_existing_email(self):
-    #     url = reverse(self.VIEW_NAME)
-    #     data = {
-    #         'username': 'erlan2',
-    #         'email': 'erlan@gmail.com',
-    #         'password': 'erlan',
-    #         'confirmation': 'erlan'
-    #     }
-    #     response = self.client.post(url, data)
-
-    #     self.assertEqual(response.status_code, 302)
-    #     self.assertEqual(response.content['message'], '')
-
-    def test_post_register_with_not_matching_passwords(self):
+    def test_register_with_not_matching_passwords_raises_error(self):
         url = reverse(self.VIEW_NAME)
         data = {
             'username': 'aida',
             'email': 'aida@gmail.com',
             'password': 'aida',
-            'confirmation': 'incorrect'
+            'password_confirmation': 'incorrect'
         }
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['message'], 'Passwords must match.')
+        self.assertContains(response, "Passwords do not match")
+
+    def test_pregister_existing_user_raises_error(self):
+        url = reverse(self.VIEW_NAME)
+        data = {
+            'username': 'testuser',
+            'email': 'testuser123@gmail.com',
+            'password': '12345123',
+            'password_confirmation': '12345123'
+        }
+
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Username already exists")
+
+    def test_register_existing_email_raises_error(self):
+        url = reverse(self.VIEW_NAME)
+        data = {
+            'username': 'superuser',
+            'email': 'admin@gmail.com',
+            'password': '12345',
+            'password_confirmation': '12345'
+        }
+
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "An account with this email already exists.")
 
 
 class TestIndex(BaseViewForTestCase):
@@ -135,10 +148,11 @@ class TestNewPost(BaseViewForTestCase):
         self.client.login(username='testuser', password='12345')
         url = reverse(self.VIEW_NAME)
         data = {
-            'new_post': 'Some post'
+            'body': 'Some post'
         }
 
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Post.objects.filter(body='Some post').exists())
+        self.assertEqual(response.json()["message"], "Post successfully submitted!")

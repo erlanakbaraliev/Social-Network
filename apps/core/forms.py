@@ -6,9 +6,13 @@ from apps.core.models import User
 
 
 class LoginForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = None
+
     username = forms.CharField(
         label='',
-        max_length=100, 
+        max_length=100,
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Username',
@@ -18,7 +22,7 @@ class LoginForm(forms.Form):
     )
     password = forms.CharField(
         label='',
-        max_length=100, 
+        max_length=100,
         widget=forms.PasswordInput(
             attrs={
                 'placeholder': 'Password'
@@ -68,7 +72,7 @@ class RegisterForm(forms.Form):
             }
         )
     )
-    passwordConfirmation = forms.CharField(
+    password_confirmation = forms.CharField(
         label='',
         max_length=100,
         widget=forms.PasswordInput(
@@ -96,12 +100,12 @@ class RegisterForm(forms.Form):
         cleaned_data = super().clean()
 
         password = cleaned_data['password']
-        passwordConfirmation = cleaned_data['passwordConfirmation']
-        
-        if password != passwordConfirmation:
+        password_confirmation = cleaned_data['password_confirmation']
+
+        if password != password_confirmation:
             raise ValidationError('Passwords do not match')
         return cleaned_data
-    
+
 class PostForm(forms.Form):
     body=forms.CharField(
         label='',
