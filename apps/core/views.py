@@ -1,13 +1,12 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
-from django.urls import reverse
 from django.template.loader import render_to_string
+from django.urls import reverse
 
-from apps.core.models import User, Post
-from apps.core.forms import LoginForm, RegisterForm, PostForm
+from apps.core.forms import LoginForm, PostForm, RegisterForm
+from apps.core.models import Post, User
 
 
 @login_required(login_url='login')

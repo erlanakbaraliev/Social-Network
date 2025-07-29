@@ -1,0 +1,63 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: CodeQuality
+  displayName: 'Code Quality'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build Job'
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.13'
+      displayName: 'Using python3.13'
+    
+    - script: |
+        python3 -m pip install --upgrade pip
+        pip install -r requirements.txt -r requirements-dev.txt
+      displayName: 'Install dependencies'
+    
+    - script: |
+        coverage run manage.py test
+      displayName: 'Running Tests'
+    
+    - script: |
+        coverage report
+      displayName: 'Coverage report'
+  
+- stage: BuildRelease
+  displayName: 'Build and Release'
+  dependsOn: CodeQuality
+  condition: |
+    not(failed())
+  jobs:
+  - job: Build
+    displayName: 'Build'
+    steps:
+    - script: |
+        echo 'Building a Python package'
+      displayName: 'Build a Python package'
+  
+  - job: Release
+    displayName: 'Release'
+    steps:
+    - script: |
+        echo 'Release to Azure Artifacts'
+      displayName: 'Release to Azure Artifacts'
+  
+- stage: Deploy
+  displayName: 'Deploy'
+  dependsOn: BuildRelease
+  condition: |
+    not(failed())
+  jobs:
+  - job: Deploy
+    displayName: 'Deploy'
+    steps:
+    - script: |
+        echo 'Deploying'
+      displayName: 'Deploy'

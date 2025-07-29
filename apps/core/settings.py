@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+from apps.core.utils import get_db_env, create_db_setup
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -77,7 +79,9 @@ WSGI_APPLICATION = 'apps.core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
+DB_ENV = get_db_env()
+
+DATABASE_POSTGRESQL = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mydatabase',
@@ -87,6 +91,20 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+DATABASE_SQLITE = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mySQLite'
+    }
+}
+
+DATABASE_CONFIG_MAP = {
+    'sqlite': DATABASE_SQLITE,
+    'postgresql': DATABASE_POSTGRESQL
+}
+
+DATABASES = create_db_setup(DATABASE_CONFIG_MAP, DB_ENV)
 
 
 # Password validation

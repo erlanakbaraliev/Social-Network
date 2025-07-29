@@ -2,6 +2,11 @@
 run:
 	python3 manage.py runserver
 
+.PHONY: run-sqlite
+run-sqlite: export DB_ENV=sqlite
+run-sqlite:
+	python3 manage.py runserver
+
 .PHONY: test
 test:
 	docker-compose exec webapp python manage.py test

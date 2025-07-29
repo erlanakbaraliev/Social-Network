@@ -1,6 +1,6 @@
 from django import forms
-from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
+from django.core.exceptions import ValidationError
 
 from apps.core.models import User
 
@@ -106,8 +106,9 @@ class RegisterForm(forms.Form):
             raise ValidationError('Passwords do not match')
         return cleaned_data
 
+
 class PostForm(forms.Form):
-    body=forms.CharField(
+    body = forms.CharField(
         label='',
         max_length=1000,
         required=True,
