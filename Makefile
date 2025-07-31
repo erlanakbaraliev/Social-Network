@@ -31,3 +31,7 @@ sass:
 .PHONY: sass_watch
 sass_watch:
 	sass --watch apps/core/static/core/css/styles.scss:apps/core/static/core/css/styles.css
+
+.PHONE: log
+log:
+	git log --oneline --decorate --graph --all
