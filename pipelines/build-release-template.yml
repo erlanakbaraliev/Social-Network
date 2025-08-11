@@ -1,0 +1,103 @@
+parameters:
+# Release the build artifact into which feed?
+# - name: artifactFeed
+#   type: string
+
+# Artifact of which repo to publish?
+# - name: repositoryUrl
+#   type: string
+
+- name: skipQA
+  type: boolean
+
+- name: skipRelease
+  type: boolean
+
+- name: releaseVersion
+  type: string
+
+- name: adoAgentPool
+  type: string
+
+# ------------------------------------
+# |         Code Quality             |
+# ------------------------------------
+stages:
+- stage:
+  displayName: CodeQualityScan
+  condition: |
+    eq('${{ parameters.skipQA }}', false)
+  jobs:
+  # ------------------------------------
+  # |         Unit Test                |
+  # ------------------------------------
+  - job:
+    displayName: Unit Test
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.13'
+        architecture: 'x64'
+
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt -r requirements-dev.txt
+      displayName: 'Installing pre-requisites'
+
+    # Search through the current directory, find **manage.py, and set projectRoot variable to the path.
+    - task: PythonScript@0
+      displayName: 'Export project path'
+      inputs:
+        scriptSource: 'inline'
+        script: |
+          from glob import iglob
+          from os import path
+
+          manage_py = next(iglob(path.join('**', 'manage.py'), recursive=True), None)
+          if not manage_py:
+              raise SystemExit('Could not find a django project')
+          project_location = path.dirname(path.abspath(manage_py))
+          print('Found django project in ', project_location)
+          print(f'##vso[task.setvariable variable=projectRoot]{project_location}')
+
+    - script: |
+        pushd $(projectRoot)
+        export DB_ENV=sqlite
+        coverage run manage.py test -b
+      displayName: 'Running Tests'
+    
+    - script: |
+        coverage xml
+      displayName: 'Generating coverage artifact'
+
+    - task: PublishCodeCoverageResults@2
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
+      displayName: Publishing coverage results
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathToPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'CodeCoverageFile'
+        publishLocation: 'Container'
+  - job: PylintAndPycodestyle
+    displayName: Pylint and Pycodestyle
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.13'
+        architecture: 'x64'
+    
+    - script: |
+        python3 -m pip install --upgrade pip
+        pip install -r requirements.txt -r requirements-dev.txt
+      displayName: 'Install pre-requisites'
+    
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          ./run_linters.sh && echo "All checks have passed" || (cat build/linters_summary; exit 1)
+        workingDirectory: '$(System.DefaultWorkingDirectory)/utils'
+      displayName: 'Run linters'

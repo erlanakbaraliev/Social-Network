@@ -1,5 +1,5 @@
-from django.urls import reverse
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 from apps.core.models import Post
 from apps.core.utils_for_tests import BaseViewForTestCase
@@ -43,7 +43,7 @@ class TestRegister(BaseViewForTestCase):
     VIEW_NAME = 'register'
 
     def test_register_view_returns_200_http_response_uses_register_html(self):
-        response = self.get_request() # self.client.get(reverse("register"))
+        response = self.get_request()  # self.client.get(reverse("register"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "core/register.html")
 

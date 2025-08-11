@@ -2,6 +2,11 @@
 run:
 	python3 manage.py runserver
 
+.PHONY: run-sqlite
+run-sqlite: export DB_ENV=sqlite
+run-sqlite:
+	python3 manage.py runserver
+
 .PHONY: test
 test:
 	docker-compose exec webapp python manage.py test
@@ -26,3 +31,7 @@ sass:
 .PHONY: sass_watch
 sass_watch:
 	sass --watch apps/core/static/core/css/styles.scss:apps/core/static/core/css/styles.css
+
+.PHONE: log
+log:
+	git log --oneline --decorate --graph --all

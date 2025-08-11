@@ -1,0 +1,118 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+parameters:
+- name: Version
+  type: string
+  default: "v1.0"
+
+stages:
+# ------------------------------------
+# |         Code Quality             |
+# ------------------------------------
+- stage: CodeQuality
+  displayName: 'Code Quality'
+  jobs:
+  - job: UnitTests
+    displayName: 'Unit Tests'
+    steps:
+    # We want to use this specific python version. The default azure devops python version is 
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.13'
+      displayName: 'Using python3.13'
+    
+    - script: |
+        python3 -m pip install --upgrade pip
+        pip install -r requirements.txt -r requirements-dev.txt
+      displayName: 'Installing pre-requisites'
+    
+    # Set DB_ENV to sqlite because sqlite doesn't need extra setup like postgresql. Therefore makes it perfect for pipelines
+    # -b django flag (not coverage flag) means fail fast. If the first test fails, exit and don't run the remaining test. We want to solve the tests one by one.
+    - script: |
+        export DB_ENV='sqlite'
+        coverage run manage.py test -b
+      displayName: 'Running Tests'
+    
+    # Generating .xml file for PublishCodeCoverageResults task
+    - script: |
+        coverage xml
+      displayName: 'Generating a coverage artifact'
+
+    - task: UseDotNet@2
+      inputs:
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+    
+    - task: PublishCodeCoverageResults@2
+      inputs:
+        summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
+
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: '**/coverage*.xml'
+        testRunTitle: 'Publish test results for Python $(python.version)'
+# ------------------------------------
+# |       Self-Hosted Agent           |
+# ------------------------------------
+- stage: UsingSelfHostedPool
+  displayName: 'Using Self-Hosted Pool'
+  jobs:
+  - job: Pool
+    displayName: 'Using Self-Hosted Pool'
+    pool: 'MyLaptopPool'
+    steps:
+    - script: |
+        git remote add azure https://dev.azure.com/erlanakbaralievich/MyProject/_git/Social%20Network
+        git tag -a ${{ parameters.Version }} -m "Release version ${{ parameters.Version }}"
+        git push azure ${{ parameters.Version }}
+      displayName: 'Check Git version'
+
+# ------------------------------------
+# |       Build and Release          |
+# ------------------------------------
+- stage: BuildRelease
+  displayName: 'Build and Release'
+  dependsOn: CodeQuality
+  isSkippable: true
+  condition: |
+    not(failed())
+  jobs:
+  - job: Build
+    displayName: 'Build'
+    steps:
+    - script: |
+        echo 'Building a Python package'
+      displayName: 'Build a Python package'
+  
+  - job: Release
+    displayName: 'Release'
+    steps:
+    - script: |
+        echo 'Release to Azure Artifacts'
+      displayName: 'Release to Azure Artifacts'
+  
+# ------------------------------------
+# |           Deploy                 |
+# ------------------------------------
+- stage: Deploy
+  displayName: 'Deploy'
+  dependsOn: BuildRelease
+  isSkippable: true
+  lockBehavior: sequential  # Default is none which means jobs can run concurrently
+  condition: |
+    not(failed())
+  jobs:
+  - job: Deploy
+    displayName: 'Deploy'
+    pool: server
+    steps:
+    - task: ManualValidation@1
+      timeoutInMinutes: 2
+      inputs:
+        notifyUsers: erlan.akbaralievich@gmail.com
+        instructions: 'Please validate the stage configuration and resume'
+        onTimeout: 'resume'

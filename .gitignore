@@ -8,6 +8,7 @@ project4/__pycache__/
 # Coverage reports
 htmlcov/
 .coverage
+coverage.xml
 
 # Virtual environment
 .venv/

@@ -1,5 +1,5 @@
+from apps.core.models import Follow, Post, User
 from apps.core.utils_for_tests import BaseViewForTestCase
-from apps.core.models import User, Post, Follow
 
 
 class TestModels(BaseViewForTestCase):
