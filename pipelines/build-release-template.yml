@@ -10,29 +10,27 @@ parameters:
 - name: skipQA
   type: boolean
 
-- name: skipRelease
-  type: boolean
-
 - name: releaseVersion
   type: string
 
 - name: adoAgentPool
   type: string
+  default: 'MyLaptopPool' 
 
-# ------------------------------------
-# |         Code Quality             |
-# ------------------------------------
+# ====================================
+#||         Code Quality             ||
+# ====================================
 stages:
-- stage:
-  displayName: CodeQualityScan
+- stage: CodeQuality
+  displayName: 'Code Quality'
   condition: |
     eq('${{ parameters.skipQA }}', false)
   jobs:
   # ------------------------------------
-  # |         Unit Test                |
+  #|        Tests and Coverage          |
   # ------------------------------------
   - job:
-    displayName: Unit Test
+    displayName: 'Tests and Coverage'
     steps:
     - task: UsePythonVersion@0
       inputs:
@@ -81,6 +79,9 @@ stages:
         PathToPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'CodeCoverageFile'
         publishLocation: 'Container'
+  # ------------------------------------
+  #|       Pylint and Pycodestyle       |
+  # ------------------------------------
   - job: PylintAndPycodestyle
     displayName: Pylint and Pycodestyle
     steps:
@@ -101,3 +102,55 @@ stages:
           ./run_linters.sh && echo "All checks have passed" || (cat build/linters_summary; exit 1)
         workingDirectory: '$(System.DefaultWorkingDirectory)/utils'
       displayName: 'Run linters'
+
+# ====================================
+#||       Build and Release          ||
+# ====================================
+- stage: BuildRelease
+  displayName: 'Build and Release'
+  condition: always()
+  jobs:
+    # --------------------------------
+    #|            Build               |
+    # --------------------------------
+  - job: Build
+    displayName: 'Build'
+    steps:
+    - script: |
+        echo 'Building a Python package'
+      displayName: 'Build a Python package'
+    # --------------------------------
+    #|            Release             |
+    # --------------------------------
+  - job: Release
+    displayName: 'Release using a self-hosted pool'
+    pool: ${{ parameters.adoAgentPool }}
+    steps:
+    - script: |
+        echo 'Release Python package to Azure Artifacts'
+      displayName: 'Release to Azure Artifacts'
+
+# ====================================
+#||           Git tag                ||
+# ====================================
+- stage: TagRelease
+  displayName: 'Tagging the Release'
+  dependsOn: BuildRelease
+  condition: |
+    eq(dependencies.BuildRelease.result, 'Succeeded')
+  jobs:
+  - job:
+    displayName: 'Git Tag'
+    pool: ${{ parameters.adoAgentPool }}
+    steps:
+    - script: |
+        git config --global user.email "erlan.akbaralievich@gmail.com"
+        git config --global user.name "Akbaraliev Erlan"
+      displayName: 'Setting Git configuration'
+
+    - script: |
+        git remote add azure https://dev.azure.com/erlanakbaralievich/MyProject/_git/Social%20Network
+        git tag -a ${{ parameters.releaseVersion}} -m "Release version ${{ parameters.releaseVersion }}"
+        git push azure ${{ parameters.releaseVersion }}
+      displayName: 'Tagging the releaes'
+
