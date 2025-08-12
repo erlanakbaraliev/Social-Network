@@ -1,5 +1,8 @@
 trigger:
-  - none
+- none
+
+pr:
+- none
 
 pool:
   vmImage: ubuntu-latest
@@ -7,11 +10,6 @@ pool:
 parameters:
 - name: skipQA
   displayName: 'Skip Code Quality Scan'
-  type: boolean
-  default: false
-
-- name: skipRelease
-  displayName: 'Skip build and release'
   type: boolean
   default: false
 
@@ -24,6 +22,5 @@ stages:
 - template: build-release-template.yml
   parameters:
     skipQA: ${{ parameters.skipQA }}
-    skipRelease: ${{ parameters.skipRelease }}
     releaseVersion: ${{ parameters.releaseVersion }}
     adoAgentPool: 'MyLaptopPool'
