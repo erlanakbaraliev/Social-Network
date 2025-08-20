@@ -149,7 +149,7 @@ stages:
       displayName: 'Setting Git configuration'
 
     - script: |
-        git remote add azure https://dev.azure.com/erlanakbaralievich/MyProject/_git/Social%20Network
+        git remote add azure https://dev.azure.com/erlanakbaralievich/MyProject/_git/Fixed-Income-Webapp
         git tag -a ${{ parameters.releaseVersion}} -m "Release version ${{ parameters.releaseVersion }}"
         git push azure ${{ parameters.releaseVersion }}
       displayName: 'Tagging the releaes'

@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import include
 
 from apps.core import views
 
@@ -24,5 +25,6 @@ urlpatterns = [
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
-    path("new_post", views.new_post, name="new_post")
+    path("new_post", views.new_post, name="new_post"),
+    path("analytics_qa/", include("apps.analytics_qa.urls"), name="analytics_qa")
 ]
